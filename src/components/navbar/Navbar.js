@@ -31,18 +31,6 @@ function Navbar() {
                   Home
                 </Link>
               </li>
-
-              <li className="nav-item fs-5 mx-3">
-                <a className="nav-link" href="landing-page.html#about">
-                  About
-                </a>
-              </li>
-
-              <li className="nav-item fs-5 mx-3">
-                <a className="nav-link" aria-disabled="true">
-                  Cooming Soon
-                </a>
-              </li>
             </ul>
           </div>
         </div>

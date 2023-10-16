@@ -1,6 +1,15 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function StepSatu(props) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!props.stepClear.step1) {
+      navigate("/");
+    }
+  }, []);
+
   return (
     <div className="stepSatu">
       <main>
@@ -316,6 +325,7 @@ function StepSatu(props) {
               <Link
                 to="/step-dua"
                 style={{ textDecoration: "none", color: "white" }}
+                onClick={() => props.changeStatusStep("step2")}
               >
                 Submit
               </Link>

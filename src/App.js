@@ -13,6 +13,26 @@ import { useState } from "react";
 function App() {
   const generateUniqueId = require("generate-unique-id");
 
+  const [stepClear, setStepClear] = useState({
+    step1: false,
+    step2: false,
+    result: false,
+  });
+
+  const changeStatusStep = (status) => {
+    setStepClear((prev) => {
+      if (status === "step1") {
+        return { ...prev, step1: true };
+      } else if (status === "step2") {
+        return { ...prev, step2: true };
+      } else if (status === "result") {
+        return { ...prev, result: true };
+      } else {
+        return { step1: false, step2: false, result: false };
+      }
+    });
+  };
+
   // Class MEMBER
   class Member {
     constructor(id, name, items, totalPayment) {
@@ -84,12 +104,12 @@ function App() {
       if (type === "name") {
         return { ...prev, name: e.target.value };
       } else if (type === "price") {
-        if (e.target.value[0] === "0" && e.target.value.length === 2) {
+        if (e.target.value[0] <= "0" && e.target.value.length === 2) {
           return { ...prev };
         }
         return { ...prev, price: e.target.value };
       } else {
-        if (e.target.value[0] === "0" && e.target.value.length === 2) {
+        if (e.target.value[0] <= "0" && e.target.value.length === 2) {
           return { ...prev };
         }
         return { ...prev, quantity: e.target.value };
@@ -129,7 +149,7 @@ function App() {
       if (type === "name") {
         return { ...prev, name: e.target.value };
       } else {
-        if (e.target.value[0] === "0" && e.target.value.length === 2) {
+        if (e.target.value[0] <= "0" && e.target.value.length === 2) {
           return { ...prev };
         }
         return { ...prev, price: e.target.value };
@@ -170,7 +190,7 @@ function App() {
 
         // Remove badge selected item
         if (currentItem) {
-          if (currentItem.quantity <= 0) {
+          if (currentItem.currentQuantity <= 0) {
             const removedItem = member.items.filter(
               (item) => item.id !== idItem
             );
@@ -188,14 +208,12 @@ function App() {
                   (item) => item.id === idItem
                 );
                 if (currentRealItem.currentQuantity > 0) {
-                  item.quantity = item.quantity + 1;
                   item.currentQuantity = item.currentQuantity + 1;
                 }
               } else {
-                if (item.quantity > 0) {
-                  item.quantity = item.quantity - 1;
+                if (item.currentQuantity > 0) {
                   item.currentQuantity = item.currentQuantity - 1;
-                } else if (item.quantity <= 0) {
+                } else if (item.currentQuantity <= 0) {
                 }
               }
               return item;
@@ -209,7 +227,6 @@ function App() {
           const selectedItem = {
             ...items.find((item) => item.id === idItem),
           };
-          selectedItem.quantity = 1;
           selectedItem.currentQuantity = 1;
           editMember.items.push(selectedItem);
           return editMember;
@@ -249,7 +266,12 @@ function App() {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={<Home />}></Route>
+        <Route
+          path="/"
+          element={
+            <Home stepClear={stepClear} changeStatusStep={changeStatusStep} />
+          }
+        ></Route>
         <Route
           path="/step-satu"
           element={
@@ -273,6 +295,8 @@ function App() {
               addAddCharge={addAddCharge}
               listAddCharge={listAddCharge}
               removeAddCharge={removeAddCharge}
+              stepClear={stepClear}
+              changeStatusStep={changeStatusStep}
             />
           }
         ></Route>
@@ -284,10 +308,23 @@ function App() {
               members={members}
               items={items}
               selectItem={selectItem}
+              stepClear={stepClear}
+              changeStatusStep={changeStatusStep}
             />
           }
         ></Route>
-        <Route path="/result" element={<Result />}></Route>
+        <Route
+          path="/result"
+          element={
+            <Result
+              members={members}
+              PICName={PICName}
+              listAddCharge={listAddCharge}
+              stepClear={stepClear}
+              changeStatusStep={changeStatusStep}
+            />
+          }
+        ></Route>
       </Routes>
 
       <Footer />

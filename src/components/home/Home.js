@@ -1,15 +1,15 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
-function Home() {
+function Home(props) {
   return (
     <div className="home">
       <header>
         <div>
           <img
             src="assets/Home 1.1.png"
-            className="rounded mx-auto d-block"
+            className="rounded mx-auto d-block w-100"
             alt="gambar"
-            height="600px"
           />
         </div>
 
@@ -50,6 +50,7 @@ function Home() {
             <Link
               to="/step-satu"
               style={{ textDecoration: "none", color: "white" }}
+              onClick={() => props.changeStatusStep("step1")}
             >
               Hitung Sekarang
             </Link>

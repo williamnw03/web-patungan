@@ -1,6 +1,14 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function StepDua(props) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!props.stepClear.step2) {
+      navigate("/");
+    }
+  }, []);
   return (
     <div className="stepDua">
       <main>
@@ -41,7 +49,7 @@ function StepDua(props) {
                                   data-bs-theme="dark"
                                 >
                                   <span>
-                                    {item.quantity} - {item.name}
+                                    {item.currentQuantity} - {item.name}
                                   </span>
                                   <button
                                     type="button"
@@ -104,6 +112,7 @@ function StepDua(props) {
                   to="/result"
                   className="btn text-light btn-lg"
                   style={{ backgroundColor: "#17223a" }}
+                  onClick={() => props.changeStatusStep("result")}
                 >
                   Hitung
                 </Link>
