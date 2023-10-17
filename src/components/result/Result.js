@@ -10,6 +10,10 @@ function Result(props) {
     if (!props.stepClear.result) {
       navigate("/");
     }
+
+    if (!props.filledStep.step2) {
+      navigate("/step-dua");
+    }
   }, [props.stepClear]);
 
   const totalMembers = props.members.length;
@@ -103,23 +107,11 @@ function Result(props) {
             </table>
 
             <div className="text-end">
-              <button
-                className="p-2"
-                style={{ backgroundColor: "white", borderRadius: "10px" }}
-              >
-                <img
-                  src="assets/link.png"
-                  alt=""
-                  height="auto"
-                  width="30"
-                  style={{ border: "none" }}
-                />
-              </button>
               <Link
                 to="/result"
                 className="btn text-light btn-lg"
                 style={{ backgroundColor: "#17223a" }}
-                onClick={() => props.changeStatusStep("clear")}
+                onClick={props.startOver}
               >
                 Start Over
               </Link>

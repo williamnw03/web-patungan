@@ -42,19 +42,19 @@ function Home(props) {
               ini!
             </div>
           </div>
-          <button
-            type="button"
+
+          <Link
+            to="/step-satu"
             className="btn btn mt-5 btn-lg"
-            style={{ backgroundColor: "#17223a" }}
+            style={{
+              textDecoration: "none",
+              color: "white",
+              backgroundColor: "#17223a",
+            }}
+            onClick={() => props.changeStatusStep("step1")}
           >
-            <Link
-              to="/step-satu"
-              style={{ textDecoration: "none", color: "white" }}
-              onClick={() => props.changeStatusStep("step1")}
-            >
-              Hitung Sekarang
-            </Link>
-          </button>
+            Hitung Sekarang
+          </Link>
         </div>
 
         <div>

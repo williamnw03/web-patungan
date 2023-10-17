@@ -12,6 +12,21 @@ function StepSatu(props) {
 
   return (
     <div className="stepSatu">
+      {props.showFilledAlert && (
+        <div
+          class="alert alert-danger alert-dismissible fade show fixed-top mt-5 w-50 mx-auto"
+          role="alert"
+        >
+          <strong>Warning!</strong> You must filled all input{" "}
+          <strong> ('Biaya Tambahan is Optional')</strong>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+        </div>
+      )}
       <main>
         <h1 style={{ textAlign: "center" }} className="mb-5 mt-5 fw-bold">
           Nama Grup dan Anggota
@@ -317,19 +332,18 @@ function StepSatu(props) {
           </div>
 
           <div className="text-center mt-5 mb-5">
-            <button
-              type="button"
+            <Link
+              to="/step-dua"
               className="btn btn btn-lg"
-              style={{ backgroundColor: "#17223a" }}
+              style={{
+                textDecoration: "none",
+                color: "white",
+                backgroundColor: "#17223a",
+              }}
+              onClick={() => props.changeStatusStep("step2", "step1")}
             >
-              <Link
-                to="/step-dua"
-                style={{ textDecoration: "none", color: "white" }}
-                onClick={() => props.changeStatusStep("step2")}
-              >
-                Submit
-              </Link>
-            </button>
+              Submit
+            </Link>
           </div>
         </div>
       </section>

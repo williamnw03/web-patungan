@@ -8,9 +8,27 @@ function StepDua(props) {
     if (!props.stepClear.step2) {
       navigate("/");
     }
+
+    if (!props.filledStep.step1) {
+      navigate("/step-satu");
+    }
   }, []);
   return (
     <div className="stepDua">
+      {props.showFilledAlert && (
+        <div
+          class="alert alert-danger alert-dismissible fade show fixed-top mt-5 w-50 mx-auto"
+          role="alert"
+        >
+          <strong>Warning!</strong> You must selected all items{" "}
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+        </div>
+      )}
       <main>
         <article>
           <div className="container mt-3">
@@ -35,38 +53,40 @@ function StepDua(props) {
                   {props.members.map((member) => {
                     return (
                       <tr key={member.id}>
-                        <td>
+                        <td className="w-50">
                           <div className="mb-3">
                             <div className="card">
                               <div className="card-body">{member.name}</div>
                             </div>
-                            {member.items.map((item) => {
-                              return (
-                                <div
-                                  key={item.id}
-                                  className="d-flex justify-content-between align-items-center gap-1 badge text-bg-secondary mt-2"
-                                  style={{ width: "max-content" }}
-                                  data-bs-theme="dark"
-                                >
-                                  <span>
-                                    {item.currentQuantity} - {item.name}
-                                  </span>
-                                  <button
-                                    type="button"
-                                    className="btn-close"
-                                    aria-label="Close"
-                                    onClick={(e) =>
-                                      props.selectItem(
-                                        e,
-                                        member.id,
-                                        item.id,
-                                        "desc"
-                                      )
-                                    }
-                                  ></button>
-                                </div>
-                              );
-                            })}
+                            <div className="d-flex gap-2 flex-wrap w-100">
+                              {member.items.map((item) => {
+                                return (
+                                  <div
+                                    key={item.id}
+                                    className="d-flex justify-content-between align-items-center gap-1 badge text-bg-secondary mt-2"
+                                    style={{ width: "max-content" }}
+                                    data-bs-theme="dark"
+                                  >
+                                    <span>
+                                      {item.currentQuantity} - {item.name}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      className="btn-close"
+                                      aria-label="Close"
+                                      onClick={(e) =>
+                                        props.selectItem(
+                                          e,
+                                          member.id,
+                                          item.id,
+                                          "desc"
+                                        )
+                                      }
+                                    ></button>
+                                  </div>
+                                );
+                              })}
+                            </div>
                           </div>
                         </td>
                         <td>
@@ -105,14 +125,18 @@ function StepDua(props) {
               </table>
 
               <div className="text-end">
-                <button type="button" className="btn btn-danger btn-lg mx-3">
+                <button
+                  type="button"
+                  className="btn btn-danger btn-lg mx-3"
+                  onClick={props.resetStepDua}
+                >
                   Reset
                 </button>
                 <Link
                   to="/result"
                   className="btn text-light btn-lg"
                   style={{ backgroundColor: "#17223a" }}
-                  onClick={() => props.changeStatusStep("result")}
+                  onClick={() => props.changeStatusStep("result", "step2")}
                 >
                   Hitung
                 </Link>

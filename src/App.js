@@ -7,7 +7,7 @@ import Result from "./components/result/Result";
 
 import generateUniqueId from "generate-unique-id";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function App() {
@@ -19,7 +19,54 @@ function App() {
     result: false,
   });
 
-  const changeStatusStep = (status) => {
+  const [filledStep, setFilledStep] = useState({
+    step1: false,
+    step2: false,
+  });
+
+  const [showFilledAlert, setShowFilledAlert] = useState(false);
+
+  const changeStatusStep = (status, currentStep = null) => {
+    if (currentStep === "step1") {
+      if (
+        groupName !== "" &&
+        PICName !== "" &&
+        members.length > 0 &&
+        items.length > 0
+      ) {
+        setShowFilledAlert(false);
+        setFilledStep((prev) => {
+          return { ...prev, step1: true };
+        });
+      } else {
+        setShowFilledAlert(true);
+        setFilledStep((prev) => {
+          return { ...prev, step1: false };
+        });
+        return false;
+      }
+    } else if (currentStep === "step2") {
+      let countNotEmpty = 0;
+      items.forEach((item) => {
+        if (item.currentQuantity > 0) {
+          countNotEmpty++;
+        }
+      });
+
+      if (countNotEmpty > 0) {
+        setShowFilledAlert(true);
+        setFilledStep((prev) => {
+          return { ...prev, step2: false };
+        });
+        return false;
+      } else {
+        setShowFilledAlert(false);
+        setFilledStep((prev) => {
+          return { ...prev, step2: true };
+        });
+      }
+    }
+
     setStepClear((prev) => {
       if (status === "step1") {
         return { ...prev, step1: true };
@@ -81,9 +128,39 @@ function App() {
   });
   const [listAddCharge, setlistAddCharge] = useState([]);
 
+  const startOver = () => {
+    setGroupName("");
+    setPICName("");
+    setMemberName("");
+    setMembers([]);
+    setItemObj({
+      id: "",
+      name: "",
+      price: 0,
+      quantity: 0,
+    });
+    setItems([]);
+    setAddChargeObj({
+      id: "",
+      name: "",
+      price: 0,
+    });
+    setlistAddCharge([]);
+    setStepClear({
+      step1: false,
+      step2: false,
+      result: false,
+    });
+    setFilledStep({
+      step1: false,
+      step2: false,
+    });
+  };
+
   const groupNameChange = (e) => setGroupName(e.target.value);
   const PICNameChange = (e) => setPICName(e.target.value);
   const memberNameChange = (e) => setMemberName(e.target.value);
+
   const addMember = (e, memberName) => {
     if (memberName === "") {
       return false;
@@ -95,10 +172,39 @@ function App() {
       return newMembers;
     });
   };
+
   const removeMember = (e, id) => {
     const newMembers = members.filter((e) => e.id !== id);
-    setMembers(newMembers);
+    const memberRemoved = members.find((e) => e.id === id);
+    let newItems;
+
+    memberRemoved.items.forEach((item) => {
+      const itemID = item.id;
+      const itemQuantity = item.currentQuantity;
+
+      newItems = items.map((item) => {
+        const newCurrentQuantity =
+          parseInt(item.currentQuantity) + parseInt(itemQuantity);
+        if (item.id === itemID) {
+          return {
+            ...item,
+            currentQuantity: newCurrentQuantity,
+          };
+        } else {
+          return item;
+        }
+      });
+    });
+
+    setItems((prev) => {
+      return newItems;
+    });
+
+    setMembers((prev) => {
+      return newMembers;
+    });
   };
+
   const itemChange = (e, type) => {
     setItemObj((prev) => {
       if (type === "name") {
@@ -141,6 +247,19 @@ function App() {
 
   const removeItem = (e, id) => {
     const newItems = items.filter((e) => e.id !== id);
+    const itemRemoved = items.find((e) => e.id === id);
+
+    const newMembers = members.map((member) => {
+      return {
+        ...member,
+        items: member.items.filter((item) => {
+          return item.id !== itemRemoved.id;
+        }),
+      };
+    });
+
+    setMembers(newMembers);
+
     setItems(newItems);
   };
 
@@ -261,6 +380,15 @@ function App() {
     }
   };
 
+  const resetStepDua = () => {
+    setMembers((prev) => {
+      return prev.map((member) => ({ ...member, items: [] }));
+    });
+    setItems((prev) => {
+      return prev.map((item) => ({ ...item, currentQuantity: item.quantity }));
+    });
+  };
+
   return (
     <BrowserRouter>
       <Navbar />
@@ -297,6 +425,7 @@ function App() {
               removeAddCharge={removeAddCharge}
               stepClear={stepClear}
               changeStatusStep={changeStatusStep}
+              showFilledAlert={showFilledAlert}
             />
           }
         ></Route>
@@ -310,6 +439,9 @@ function App() {
               selectItem={selectItem}
               stepClear={stepClear}
               changeStatusStep={changeStatusStep}
+              filledStep={filledStep}
+              showFilledAlert={showFilledAlert}
+              resetStepDua={resetStepDua}
             />
           }
         ></Route>
@@ -322,6 +454,8 @@ function App() {
               listAddCharge={listAddCharge}
               stepClear={stepClear}
               changeStatusStep={changeStatusStep}
+              filledStep={filledStep}
+              startOver={startOver}
             />
           }
         ></Route>
