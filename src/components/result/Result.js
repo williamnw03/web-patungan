@@ -19,6 +19,7 @@ function Result(props) {
   const totalMembers = props.members.length;
 
   const eachMemberPricing = props.members.map((member) => {
+    console.log(member);
     const newMemberPricing = {};
     let totalPricing = 0;
 
@@ -106,7 +107,11 @@ function Result(props) {
               </tbody>
             </table>
 
-            <div className="text-end">
+            <div className="text-end d-flex justify-content-between align-items-center">
+              <p className="mb-0 text-danger">
+                *Harap <strong>di-screenshot</strong> atau{" "}
+                <strong>dicatat</strong> agar tidak lupa!
+              </p>
               <Link
                 to="/result"
                 className="btn text-light btn-lg"

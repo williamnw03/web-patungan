@@ -174,34 +174,30 @@ function App() {
   };
 
   const removeMember = (e, id) => {
-    const newMembers = members.filter((e) => e.id !== id);
+    setMembers((prev) => {
+      return prev.filter((e) => e.id !== id);
+    });
+
     const memberRemoved = members.find((e) => e.id === id);
-    let newItems;
 
     memberRemoved.items.forEach((item) => {
       const itemID = item.id;
       const itemQuantity = item.currentQuantity;
 
-      newItems = items.map((item) => {
-        const newCurrentQuantity =
-          parseInt(item.currentQuantity) + parseInt(itemQuantity);
-        if (item.id === itemID) {
-          return {
-            ...item,
-            currentQuantity: newCurrentQuantity,
-          };
-        } else {
-          return item;
-        }
+      setItems((prev) => {
+        return prev.map((item) => {
+          const newCurrentQuantity =
+            parseInt(item.currentQuantity) + parseInt(itemQuantity);
+          if (item.id === itemID) {
+            return {
+              ...item,
+              currentQuantity: newCurrentQuantity,
+            };
+          } else {
+            return item;
+          }
+        });
       });
-    });
-
-    setItems((prev) => {
-      return newItems;
-    });
-
-    setMembers((prev) => {
-      return newMembers;
     });
   };
 
@@ -246,21 +242,22 @@ function App() {
   };
 
   const removeItem = (e, id) => {
-    const newItems = items.filter((e) => e.id !== id);
     const itemRemoved = items.find((e) => e.id === id);
 
-    const newMembers = members.map((member) => {
-      return {
-        ...member,
-        items: member.items.filter((item) => {
-          return item.id !== itemRemoved.id;
-        }),
-      };
+    setMembers((prev) => {
+      return prev.map((member) => {
+        return {
+          ...member,
+          items: member.items.filter((item) => {
+            return item.id !== itemRemoved.id;
+          }),
+        };
+      });
     });
 
-    setMembers(newMembers);
-
-    setItems(newItems);
+    setItems((prev) => {
+      return prev.filter((e) => e.id !== id);
+    });
   };
 
   const changeAddCharge = (e, type) => {
@@ -307,7 +304,6 @@ function App() {
         const currentItem = member.items.find((item) => item.id === idItem);
         const editMember = { ...member };
 
-        // Remove badge selected item
         if (currentItem) {
           if (currentItem.currentQuantity <= 0) {
             const removedItem = member.items.filter(
